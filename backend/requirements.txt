@@ -1,0 +1,9 @@
+# backend
+fastapi
+fastapi_mail
+uvicorn
+# db
+sqlalchemy
+python-dotenv
+psycopg2
+alembic # migrations
