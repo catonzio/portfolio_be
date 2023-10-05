@@ -6,7 +6,7 @@ from fastapi_mail import FastMail, MessageSchema
 from db import get_db
 from repositories.email_repository import EmailRepo
 import traceback
-from schemas.email_schema import EmailSend
+from schemas.email_schema import EmailSchema, EmailSend
 from settings import Settings
 
 
@@ -19,19 +19,19 @@ async def send_email(email: EmailSend, db: Session = Depends(get_db)):
         subject=email.subject,
         recipients=["danilocatone@gmail.com"],
         template_body={
-            "title": "You received a message from " + email.sender,
+            "title": "You received a message from " + email.sender_email,
             "content": email.body,
-            "name": email.sender,
+            "name": email.sender_name,
         },
         subtype="html",
     )
 
     fm = FastMail(
-        Settings.conf.model_copy(update={"MAIL_FROM_NAME": email.sender.split("@")[0]})
+        Settings.conf.model_copy(update={"MAIL_FROM_NAME": email.sender_name})
     )
     try:
         await fm.send_message(message, template_name="email.html")
-        EmailRepo.create_email(db, email)
+        await EmailRepo.create_email(db, email)
         return {"message": "Email sent"}
     except aiosmtplib.errors.SMTPDataError as e:
         print(f"SMTP Data Error: {e}")
@@ -40,3 +40,8 @@ async def send_email(email: EmailSend, db: Session = Depends(get_db)):
     except Exception as e:
         traceback.print_exc()
         return {"message": "Unexpected error", "error": traceback.format_exc()}
+
+
+@router.get("/", response_model=list[EmailSchema])
+async def get_all_emails(db: Session = Depends(get_db)):
+    return await EmailRepo.get_all_emails(db)

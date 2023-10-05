@@ -37,6 +37,7 @@ class Settings:
         # TEMPLATE_FOLDER="./../templates",
     )
 
+    personal_ip = "151.15.1.102"
 
 settings = Settings()
 

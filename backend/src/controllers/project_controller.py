@@ -3,7 +3,7 @@ from db import get_db
 from sqlalchemy.orm import Session
 from models.project import Project
 from repositories.project_repository import ProjectRepo
-from schemas.project_schema import ProjectSchema, ProjectCreate
+from schemas.project_schema import ProjectSchema, ProjectCreate, ProjectUpdate
 
 
 router = APIRouter(tags=["Projects"])
@@ -22,3 +22,38 @@ async def get_projects(db: Session = Depends(get_db)):
     """Get all projects"""
     db_projects: list[Project] = await ProjectRepo.get_projects(db)
     return db_projects
+
+
+@router.get("/{project_id}", response_model=ProjectSchema | dict)
+async def get_project(project_id: int, db: Session = Depends(get_db)):
+    """Get a project by id"""
+    db_project: Project = await ProjectRepo.get_project(db, project_id)
+    return (
+        db_project
+        if db_project
+        else {"message": f"Project not found with the ID {project_id}"}
+    )
+
+
+@router.put("/{project_id}", response_model=dict)
+async def update_project(
+    project_id: int, project: ProjectUpdate, db: Session = Depends(get_db)
+) -> dict:
+    """Update a project by id"""
+    db_project: Project = await ProjectRepo.get_project(db, project_id)
+    if not db_project:
+        return {"message": f"Project not found with the ID {project_id}"}
+
+    await ProjectRepo.update_project(db, project_id, project)
+    return {"message": "Project updated"}
+
+
+@router.delete("/{project_id}", response_model=ProjectSchema | dict)
+async def delete_project(project_id: int, db: Session = Depends(get_db)):
+    """Delete a project by id"""
+    db_project: Project = await ProjectRepo.get_project(db, project_id)
+    if not db_project:
+        return {"message": f"Project not found with the ID {project_id}"}
+
+    db_project: Project = await ProjectRepo.delete_project(db, project_id)
+    return db_project

@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from controllers.project_controller import router as project_router
 from controllers.email_controller import router as email_router
+from controllers.visit_controller import router as visit_router
 import uvicorn
 
 from db import create_tables
@@ -18,9 +19,10 @@ app = FastAPI(
 
 app.include_router(email_router, prefix="/portfolio/api/email")
 app.include_router(project_router, prefix="/portfolio/api/projects")
+app.include_router(visit_router, prefix="/portfolio/api/visits")
 
 origins = [
-    "http://localhost:57113",  # Add your origins here
+    "http://localhost:56368",  # Add your origins here
     "http://localhost:80"
     # "http://your.other.domain.com",
 ]
@@ -34,6 +36,7 @@ app.add_middleware(
 )
 
 create_tables()
+
 
 @app.exception_handler(Exception)
 def validation_exception_handler(request, err):
