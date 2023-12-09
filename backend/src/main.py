@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from controllers.project_controller import router as project_router
@@ -10,16 +10,17 @@ from db import create_tables
 
 
 app = FastAPI(
+    root_path="/portfolio/api",
     title="backend Backend",
     description="FastAPI Application backend for backend",
     version="1.0.0",
-    docs_url="/portfolio/api/docs",
-    openapi_url="/portfolio/api/openapi.json",
+    # docs_url="/docs",
+    # openapi_url="/openapi.json",
 )
 
-app.include_router(email_router, prefix="/portfolio/api/email")
-app.include_router(project_router, prefix="/portfolio/api/projects")
-app.include_router(visit_router, prefix="/portfolio/api/visits")
+app.include_router(email_router, prefix="/email")
+app.include_router(project_router, prefix="/projects")
+app.include_router(visit_router, prefix="/visits")
 
 origins = [
     "http://localhost:56368",  # Add your origins here
@@ -46,15 +47,26 @@ def validation_exception_handler(request, err):
     )
 
 
-@app.get("/")
-async def root():
-    return RedirectResponse(url="/portfolio/api")
+# @app.get("/")
+# async def root():
+#     return RedirectResponse(url="")
 
 
-@app.get("/portfolio/api")
-async def root_portfolio():
-    return RedirectResponse(url="/portfolio/api/docs")
+# @app.get("/api")
+# async def root_portfolio(request: Request):
+#     # return {
+#     #     "message": "Hello World",
+#     #     "root_path": request.scope.get("root_path"),
+#     #     "docs_url": request.scope.get("docs_url"),
+#     # }
+
+#     return RedirectResponse(url="/docs")
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=7000, reload=True)
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=7000,
+        reload=True,  # , root_path="/portfolio/api"
+    )
