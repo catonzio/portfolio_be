@@ -46,6 +46,9 @@ def validation_exception_handler(request, err):
         status_code=400, content={"message": f"{base_error_message}. Detail: {err}"}
     )
 
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/portfolio/api/docs")
 
 # @app.get("/")
 # async def root():
