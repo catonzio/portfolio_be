@@ -10,4 +10,5 @@ class Project(Base):
     description = Column(String)
     image_path = Column(String)
     url = Column(String)
+    github_url = Column(String)
     preview = Column(Boolean, default=False)

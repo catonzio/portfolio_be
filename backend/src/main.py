@@ -23,8 +23,9 @@ app.include_router(project_router, prefix="/projects")
 app.include_router(visit_router, prefix="/visits")
 
 origins = [
-    "http://localhost:56368",  # Add your origins here
-    "http://localhost:80"
+    "http://localhost:53681",
+    # "http://localhost:65260",  # Add your origins here
+    # "http://localhost:80"
     # "http://your.other.domain.com",
 ]
 

@@ -7,6 +7,7 @@ class ProjectBase(BaseModel):
     description: str
     image_path: str
     url: str
+    github_url: str
     preview: bool
 
 
@@ -19,6 +20,7 @@ class ProjectUpdate(ProjectBase):
     description: Optional[str] = None
     image_path: Optional[str] = None
     url: Optional[str] = None
+    github_url: Optional[str] = None
     preview: Optional[bool] = None
 
 

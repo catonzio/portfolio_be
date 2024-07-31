@@ -1,10 +1,11 @@
+import json
 from fastapi import APIRouter, Depends
 from db import get_db
 from sqlalchemy.orm import Session
 from models.project import Project
 from repositories.project_repository import ProjectRepo
 from schemas.project_schema import ProjectSchema, ProjectCreate, ProjectUpdate
-
+import requests
 
 router = APIRouter(tags=["Projects"])
 
@@ -57,3 +58,15 @@ async def delete_project(project_id: int, db: Session = Depends(get_db)):
 
     db_project: Project = await ProjectRepo.delete_project(db, project_id)
     return db_project
+
+@router.get("/readme/{project_id}")
+async def get_project_readme(project_id: int, db: Session = Depends(get_db)):
+    """Get the README of a project from github"""
+    project: Project = await ProjectRepo.get_project(db, project_id)
+    if not project:
+        return {"message": f"Project not found with the ID {project_id}"}
+    repo_name = project.github_url.split("/")[-1]
+    resp = requests.get(f"https://api.github.com/repos/catonzio/{repo_name}/readme").json()
+    readme_url = resp.get('download_url', '')
+    print(readme_url)
+    return requests.get(readme_url).content

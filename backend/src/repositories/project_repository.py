@@ -12,6 +12,7 @@ class ProjectRepo:
             description=project.description,
             image_path=project.image_path,
             url=project.url,
+            github_url=project.github_url,
             preview=project.preview,
         )
         db.add(db_project)
