@@ -37,7 +37,7 @@ services:
       - network
 
   portfolio_be:
-    image: portfolio_be:1.0
+    image: portfolio_be:latest
     container_name: portfolio_be
     build: ./backend
     restart: unless-stopped
