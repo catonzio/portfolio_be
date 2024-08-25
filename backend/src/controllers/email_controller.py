@@ -12,6 +12,10 @@ from settings import Settings
 
 router = APIRouter(tags=["Email"])
 
+@router.get("/prova")
+async def prova():
+    return Settings.conf
+
 
 @router.post("/send", response_model=dict)
 async def send_email(email: EmailSend, db: Session = Depends(get_db)):
